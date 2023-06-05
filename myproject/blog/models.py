@@ -9,6 +9,7 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
     publish_date = models.DateTimeField(auto_now_add=True)
     content = models.TextField()
 
