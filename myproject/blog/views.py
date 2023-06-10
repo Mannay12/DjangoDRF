@@ -6,15 +6,13 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer, UserSerializer
+from .permission import IsOwnerOrReadOnly
 
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permissions_classes = [permissions.IsAuthenticated]
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    authentication_classes = [TokenAuthentication]
-
+    permission_classes = [IsOwnerOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     search_filter = ['title']
     filterset_fields = ['title', 'content']
@@ -29,7 +27,6 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permissions_classes = [permissions.IsAuthenticated]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    authentication_classes = [TokenAuthentication]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -37,5 +34,5 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 class RegisterView(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.AllowAny]
     serializer_class = UserSerializer
