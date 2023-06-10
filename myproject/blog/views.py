@@ -12,7 +12,9 @@ from .permission import IsOwnerOrReadOnly
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permissions_classes = [IsOwnerOrReadOnly]
+
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     search_filter = ['title']
     filterset_fields = ['title', 'content']
@@ -25,8 +27,8 @@ class PostViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permissions_classes = [permissions.IsAuthenticated]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permissions_classes = [IsOwnerOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
