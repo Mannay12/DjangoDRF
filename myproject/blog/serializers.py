@@ -13,7 +13,7 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    author = serializers.ReadOnlyField(source='author.username')
 
     class Meta:
         model = Comment
